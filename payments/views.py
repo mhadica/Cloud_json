@@ -1,5 +1,6 @@
 # payments/views.py
 import razorpay
+import logging
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,12 +11,8 @@ from razorpay.errors import SignatureVerificationError
 from .serializers import PaymentSerializer
 from django.utils import timezone
 from datetime import timedelta
-import logging
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
-@method_decorator(csrf_exempt, name='dispatch')
-
+# Initialize logger
 logger = logging.getLogger(__name__)
 
 class InitiatePaymentView(APIView):
@@ -23,6 +20,7 @@ class InitiatePaymentView(APIView):
         try:
             # Log the incoming request data
             logger.info(f"Request data: {request.data}")
+            # ... rest of your view code
 
             # Validate amount
             amount = request.data.get('amount')
