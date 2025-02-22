@@ -41,6 +41,9 @@ CSRF_COOKIE_NAME = 'csrftoken'
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+CSRF_COOKIE_HTTPONLY = False  # Allows JavaScript to access the token
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_SAMESITE = 'Lax' 
 
 INSTALLED_APPS = [
     'django.contrib.admin',
