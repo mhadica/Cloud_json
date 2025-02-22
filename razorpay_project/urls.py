@@ -16,10 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
+
+# Define the health check view function
+def health_check(request):
+    return JsonResponse({'status': 'healthy', 'message': 'Server is running'}, status=200)
 
 urlpatterns = [
-    path('', health_check, name='health_check'),  # Add this line
+    path('', health_check, name='health_check'),  # Root URL health check
     path('admin/', admin.site.urls),
-    path('api/payments/', include('payments.urls')),  # Add this line
+    path('api/payments/', include('payments.urls')),
 ]
-
