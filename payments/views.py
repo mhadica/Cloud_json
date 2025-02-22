@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 class InitiatePaymentView(APIView):
     def post(self, request):
         try:
+            # Log the incoming request data
+            logger.info(f"Request data: {request.data}")
+
             # Validate amount
             amount = request.data.get('amount')
             if not amount:
@@ -38,24 +41,29 @@ class InitiatePaymentView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
+            # Initialize Razorpay client
             client = razorpay.Client(
                 auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
             )
             
+            # Convert amount to paisa
             amount_in_paisa = int(amount * 100)
             
+            # Create a Razorpay order
             order = client.order.create({
                 'amount': amount_in_paisa,
                 'currency': 'INR',
                 'payment_capture': 1
             })
 
+            # Save the payment record in the database
             payment_record = Payment.objects.create(
                 razorpay_order_id=order['id'],
                 amount=amount,
                 amount_in_paisa=amount_in_paisa
             )
 
+            # Return the Razorpay order details to the frontend
             return Response({
                 'order_id': order['id'],
                 'amount': amount_in_paisa,
@@ -79,19 +87,21 @@ class PaymentSuccessView(APIView):
                 auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
             )
             
-            # Verify signature
+            # Verify the payment signature
             client.utility.verify_payment_signature({
                 'razorpay_order_id': data['razorpay_order_id'],
                 'razorpay_payment_id': data['razorpay_payment_id'],
                 'razorpay_signature': data['razorpay_signature']
             })
             
+            # Update the payment record in the database
             payment = Payment.objects.get(razorpay_order_id=data['razorpay_order_id'])
-            payment.status = 'S'
+            payment.status = 'S'  # 'S' for success
             payment.razorpay_payment_id = data['razorpay_payment_id']
             payment.razorpay_signature = data['razorpay_signature']
             payment.save()
             
+            # Serialize the payment record for the response
             serializer = PaymentSerializer(payment)
             
             return Response({
@@ -118,7 +128,7 @@ class PaymentSuccessView(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PaymentListAPI(generics.ListAPIView):
-    permission_classes = []
+    permission_classes = []  # Allow unauthenticated access
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     
