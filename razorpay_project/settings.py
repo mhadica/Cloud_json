@@ -36,7 +36,7 @@ SECURE_SSL_REDIRECT = False  # Disable SSL redirect in development
 SESSION_COOKIE_SECURE = False  # Allow HTTP cookies in development
 CSRF_COOKIE_SECURE = False  # Allow HTTP CSRF cookies in development
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-CSRF_TRUSTED_ORIGINS = ['https://razorpay-react-navy.vercel.app/']  # Add your frontend URL
+CSRF_TRUSTED_ORIGINS = ['https://razorpay-react-navy.vercel.app']  # Add your frontend URL
 CSRF_COOKIE_NAME = 'csrftoken' 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -67,7 +67,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://razorpay-react-navy.vercel.app/",  # React dev server
+    "https://razorpay-react-navy.vercel.app",  # React dev server
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
