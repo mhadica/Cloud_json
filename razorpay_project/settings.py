@@ -44,7 +44,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 CSRF_COOKIE_HTTPONLY = False  # Allows JavaScript to access the token
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_SAMESITE = 'Lax' 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://razorpay-react-navy.vercel.app',
+    'https://razorpay-app-9jl4.onrender.com',
+]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,7 +73,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://razorpay-react-navy.vercel.app"  # Remove trailing slash
+    "https://razorpay-react-navy.vercel.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [

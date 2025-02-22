@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    path('', health_check, name='health_check'),  # Add this line
     path('admin/', admin.site.urls),
     path('api/payments/', include('payments.urls')),  # Add this line
 ]
