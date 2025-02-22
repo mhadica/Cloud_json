@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Razorpay Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Confirm Payment of ₹{{ order.amount|floatformat:0 }}</h2>
+    <button id="rzp-button1">Pay Now</button>
+    <script>
+    var options = {
+        "key": "{{ razorpay_key }}",
+        "amount": "{{ order.amount }}",
+        "currency": "INR",
+        "name": "Your Company Name",
+        "description": "Payment Transaction",
+        "order_id": "{{ order.id }}",
+        "handler": function (response){
+            fetch('/payment/success/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}`
+            }).then(response => response.json())
+              .then(data => {
+                  if(data.status === 'success') {
+                      alert('Payment Successful!');
+                  }
+              });
+        },
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+    </script>
+</body>
+</html>
