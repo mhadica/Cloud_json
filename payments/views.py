@@ -11,6 +11,10 @@ from .serializers import PaymentSerializer
 from django.utils import timezone
 from datetime import timedelta
 import logging
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+@method_decorator(csrf_exempt, name='dispatch')
 
 logger = logging.getLogger(__name__)
 
