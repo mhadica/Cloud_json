@@ -72,9 +72,10 @@ class InitiatePaymentView(APIView):
             
         except Exception as e:
             logger.error(f"Error in InitiatePaymentView: {str(e)}")
+            logger.error(f"Request data: {request.data}")
             return Response(
-                {'error': 'An error occurred while processing your request'}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {'error': str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
             )
 
 class PaymentSuccessView(APIView):
