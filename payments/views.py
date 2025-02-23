@@ -151,45 +151,40 @@ class PaymentListAPI(generics.ListAPIView):
         return queryset.order_by('-created_at')
 
 class TransactionDetailsAPI(APIView):
-    permission_classes = []  # Allow unauthenticated access
+    permission_classes = []
     
     def get(self, request):
         try:
-            # Get query parameters with defaults
-            hours = request.query_params.get('hours', 24)  # Default to last 24 hours
-            limit = request.query_params.get('limit', 10)  # Default to 10 transactions
+            # Get transactions from last 2 hours
+            time_threshold = timezone.now() - timedelta(hours=2)
             
-            try:
-                hours = int(hours)
-                limit = int(limit)
-            except ValueError:
-                return Response({
-                    'status': 'error',
-                    'message': 'Invalid hours or limit parameter'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Get successful transactions within the time period
-            time_threshold = timezone.now() - timedelta(hours=hours)
+            # Query successful transactions only
             transactions = Payment.objects.filter(
                 status='S',  # Only successful transactions
                 created_at__gte=time_threshold
-            ).order_by('-created_at')[:limit]
+            ).order_by('-created_at')
             
             # Format the response
             transaction_list = []
+            total_amount = 0
+            
             for payment in transactions:
+                amount = float(payment.amount)
+                total_amount += amount
+                
                 transaction_list.append({
                     'order_id': payment.razorpay_order_id,
                     'payment_id': payment.razorpay_payment_id,
                     'amount': str(payment.amount),
                     'currency': payment.currency,
-                    'status': payment.get_status_display(),
                     'timestamp': payment.created_at.isoformat()
                 })
             
             response_data = {
                 'status': 'success',
-                'count': len(transaction_list),
+                'total_transactions': len(transaction_list),
+                'total_amount': round(total_amount, 2),
+                'time_period': 'Last 2 hours',
                 'transactions': transaction_list
             }
             
