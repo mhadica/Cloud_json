@@ -54,7 +54,7 @@ CSRF_USE_SESSIONS = False
 CSRF_COOKIE_SAMESITE = 'Lax' 
 CSRF_TRUSTED_ORIGINS = [
     'https://razorpay-react-navy.vercel.app',
-    'https://razorpay-app-9jl4.onrender.com',
+    'https://your-railway-app-url.railway.app',
 ]
 INSTALLED_APPS = [
     'django.contrib.admin',
